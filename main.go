@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/IslaMurtazaev/receipt-processor/repository"
+	"github.com/IslaMurtazaev/receipt-processor/service"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
@@ -53,6 +54,7 @@ func main() {
 	r := gin.Default()
 
 	receiptRepository := repository.NewReceiptRepository()
+	receiptService := service.NewReceiptPointsService()
 
 	r.POST("/receipts/process", func(c *gin.Context) {
 		var receipt Receipt
@@ -81,7 +83,8 @@ func main() {
 			return
 		}
 
-		c.JSON(http.StatusOK, receipt)
+		receiptPoints := receiptService.Calculate(*receipt)
+		c.JSON(http.StatusOK, receiptPoints)
 	})
 
 	if err := r.Run(":8080"); err != nil {
