@@ -3,8 +3,8 @@ package repository
 import "github.com/google/uuid"
 
 type ReceiptItem struct {
-	ShortDescription string `json:"shortDescription"`
-	Price            string `json:"price"`
+	ShortDescription string  `json:"shortDescription"`
+	Price            float64 `json:"price"`
 }
 
 type Receipt struct {
@@ -12,7 +12,7 @@ type Receipt struct {
 	PurchaseDate string        `json:"purchaseDate"`
 	PurchaseTime string        `json:"purchaseTime"`
 	Items        []ReceiptItem `json:"items"`
-	Total        string        `json:"total"`
+	Total        float64       `json:"total"`
 }
 
 type ReceiptRepository struct {
@@ -29,7 +29,7 @@ func (r *ReceiptRepository) Create(receipt Receipt) string {
 	return id
 }
 
-func (r *ReceiptRepository) GetByID(id string) *Receipt {
-	receipt, _ := r.db[id]
-	return &receipt
+func (r *ReceiptRepository) GetByID(id string) (*Receipt, bool) {
+	receipt, exists := r.db[id]
+	return &receipt, exists
 }
