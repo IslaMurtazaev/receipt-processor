@@ -51,7 +51,7 @@ func main() {
 		receipt, exists := receiptRepository.GetByID(receiptId)
 
 		if !exists {
-			c.JSON(http.StatusBadRequest, gin.H{"error": "Receipt with such id does not exist"})
+			c.JSON(http.StatusNotFound, gin.H{"error": "No receipt found for that id"})
 			return
 		}
 
