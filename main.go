@@ -22,34 +22,6 @@ type Receipt struct {
 	Total        string        `json:"total"`
 }
 
-func parseReceipt(receipt Receipt) (repository.Receipt, error) {
-	parsedReceipt := repository.Receipt{
-		Retailer:     receipt.Retailer,
-		PurchaseDate: receipt.PurchaseDate,
-		PurchaseTime: receipt.PurchaseTime,
-	}
-
-	// Convert string item prices and total to float64
-	for i := range receipt.Items {
-		parsedPrice, err := strconv.ParseFloat(receipt.Items[i].Price, 64)
-		if err != nil {
-			return parsedReceipt, err
-		}
-		parsedReceipt.Items = append(parsedReceipt.Items, repository.ReceiptItem{
-			ShortDescription: receipt.Items[i].ShortDescription,
-			Price:            parsedPrice,
-		})
-	}
-
-	parsedTotal, err := strconv.ParseFloat(receipt.Total, 64)
-	if err != nil {
-		return parsedReceipt, err
-	}
-	parsedReceipt.Total = parsedTotal
-
-	return parsedReceipt, nil
-}
-
 func main() {
 	r := gin.Default()
 
@@ -90,4 +62,32 @@ func main() {
 	if err := r.Run(":8080"); err != nil {
 		fmt.Println("Error starting server:", err)
 	}
+}
+
+func parseReceipt(receipt Receipt) (repository.Receipt, error) {
+	parsedReceipt := repository.Receipt{
+		Retailer:     receipt.Retailer,
+		PurchaseDate: receipt.PurchaseDate,
+		PurchaseTime: receipt.PurchaseTime,
+	}
+
+	// Convert string item prices and total to float64
+	for i := range receipt.Items {
+		parsedPrice, err := strconv.ParseFloat(receipt.Items[i].Price, 64)
+		if err != nil {
+			return parsedReceipt, err
+		}
+		parsedReceipt.Items = append(parsedReceipt.Items, repository.ReceiptItem{
+			ShortDescription: receipt.Items[i].ShortDescription,
+			Price:            parsedPrice,
+		})
+	}
+
+	parsedTotal, err := strconv.ParseFloat(receipt.Total, 64)
+	if err != nil {
+		return parsedReceipt, err
+	}
+	parsedReceipt.Total = parsedTotal
+
+	return parsedReceipt, nil
 }
